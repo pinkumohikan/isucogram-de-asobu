@@ -14,3 +14,9 @@ clean:
 	sudo systemctl stop nginx
 	sudo rm -rf /var/log/nginx/*
 	sudo systemctl start nginx
+	sudo systemctl stop mysql
+	sudo rm -rf /var/lib/mysql/mysql-slow.log
+	sudo systemctl start mysql
+
+mysqldumpslow:
+	sudo mysqldumpslow -s c /var/lib/mysql/mysql-slow.log
