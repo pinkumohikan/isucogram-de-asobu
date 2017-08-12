@@ -20,3 +20,8 @@ clean:
 
 mysqldumpslow:
 	sudo mysqldumpslow -s c /var/lib/mysql/mysql-slow.log
+
+rest:
+	sudo systemctl restart nginx
+	sudo systemctl restart mysql
+	sudo systemctl restart php7.0-fpm
