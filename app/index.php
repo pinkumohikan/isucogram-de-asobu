@@ -29,8 +29,8 @@ $config = [
         'db' => [
             'host' => $_ENV['ISUCONP_DB_HOST'] ?? 'localhost',
             'port' => $_ENV['ISUCONP_DB_PORT'] ?? 3306,
-            'username' => $_ENV['ISUCONP_DB_USER'] ?? 'root',
-            'password' => $_ENV['ISUCONP_DB_PASSWORD'] ?? null,
+            'username' => 'isucon',
+            'password' => 'hoge',
             'database' => $_ENV['ISUCONP_DB_NAME'] ?? 'isuconp',
         ]
     ]
@@ -111,11 +111,13 @@ $container['helper'] = function ($c) {
         }
 
         public function get_session_user() {
+            if (isset($_SESSION['user']['account_name'])) {
+                return $_SESSION['user'];
+            }
             if (isset($_SESSION['user'], $_SESSION['user']['id'])) {
                 return $this->fetch_first('SELECT * FROM `users` WHERE `id` = ?', $_SESSION['user']['id']);
-            } else {
-                return null;
             }
+            return null;
         }
 
         public function make_posts(array $results, $options = []) {
@@ -228,9 +230,7 @@ $app->post('/login', function (Request $request, Response $response) {
     $user = $this->get('helper')->try_login($params['account_name'], $params['password']);
 
     if ($user) {
-        $_SESSION['user'] = [
-          'id' => $user['id'],
-        ];
+        $_SESSION['user'] = $user;
         return redirect($response, '/', 302);
     } else {
         $this->flash->addMessage('notice', 'アカウント名かパスワードが間違っています');
